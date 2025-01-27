@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy Barcode System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="./node_modules/html5-qrcode/html5-qrcode.min.js"></script>
+</head>
+
+<body>
+    <div class="inner-content">
+
+
+
+        <div class="content">
+
+            <div class="content-heading">
+                <h1>Pharmacy Barcode System</h1>
+            </div>
+
+            <div class="content-scanner">
+
+                <div class="content-left">
+
+                    <div class="camera-div">
+
+                        <h2>barcode scanner</h2>
+
+                        <div class="camera" id="camera-div-id">
+
+                        </div>
+
+                        <div class="start-stop-button-div">
+                            <button id="start-scanning">Start Scanning</button>
+                            <button id="stop-scanning">Stop Scanning</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="content-right">
+
+                    <div class="content-div">
+                        <h2>Details</h2>
+                        <h2 id="scan-status">Click start scanning to start</h2>
+                        <div id="medicine-details">
+                            <p id="name">Name: </p>
+                            <p id="strength">Strength: </p>
+                            <p id="form">Form: </p>
+                            <p id="interactions">Interactions: </p>
+                            <p id="bnf">BNF: </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+{
+    "barcodes": {
+        "12345678900": {
+            "name": "Amoxicillin 500mg Capsules",
+            "strength": "500mg",
+            "form": "Capsule",
+            "interactions": [
+                "Ibuprofen",
+                "Ibup",
+                "fen"
+            ],
+            "BNF": "Take the prescribed course, contains penicillin"
+        },
+        "987654321098": {
+            "name": "Paracetamol 500mg Tablets",
+            "strength": "500mg",
+            "form": "Tablet",
+            "interactions": [],
+            "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
+        },
+        "9521000999992": {
+            "name": "Paracetamol 500mg Tablets",
+            "strength": "500mg",
+            "form": "Tablet",
+            "interactions": [],
+            "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
+        },
+        "4200006200": {
+            "name": "Paracetamol 500mg Tablets",
+            "strength": "500mg",
+            "form": "Tablet",
+            "interactions": [],
+            "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
+        }
+    }
+}
