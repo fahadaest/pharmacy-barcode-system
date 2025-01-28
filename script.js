@@ -6,8 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const scanStatusElement = document.getElementById("scan-status");
     const medicineDetailsElement = document.getElementById("medicine-details");
 
-    let lastScannedBarcode = null;
-    let isScanning = false;
+    let isScanningAllowed = true;
 
     const config = {
         fps: 10,
@@ -45,11 +44,21 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
-        setField("name", medicine.name);
-        setField("strength", medicine.strength);
-        setField("form", medicine.form);
-        setField("interactions", medicine.interactions.length > 0 ? medicine.interactions.join(", ") : null);
-        setField("bnf", medicine.BNF);
+        if (medicine) {
+            setField("name", medicine.name);
+            setField("strength", medicine.strength);
+            setField("form", medicine.form);
+            setField("interactions", medicine.interactions.length > 0 ? medicine.interactions.join(", ") : null);
+            setField("bnf", medicine.BNF);
+        } else {
+            setField("name", "");
+            setField("strength", "");
+            setField("form", "");
+            setField("interactions", "");
+            setField("bnf", "");
+        }
+
+        medicineDetailsElement.style.display = "block";
     };
 
 
@@ -63,23 +72,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     cameraId,
                     config,
                     async (decodedText, decodedResult) => {
-
-                        console.log(`Decoded Text: ${decodedText}`);
-
-                        if (decodedText === lastScannedBarcode || isScanning) {
-                            // scanStatusElement.textContent = "Barcode is scanned already";
-                            // scanStatusElement.style.color = "red";
-                            return;
-                        }
+                        if (!isScanningAllowed) return;
+                        isScanningAllowed = false;
+                        setTimeout(() => {
+                            isScanningAllowed = true;
+                        }, 1000);
 
                         const audio = new Audio('./audio/store-scanner-beep-90395.mp3');
                         audio.load();
                         audio.play().catch(err => console.error("Error playing audio:", err));
 
-                        isScanning = true;
-                        lastScannedBarcode = decodedText;
-
-
+                        console.log(`Decoded Text: ${decodedText}`);
 
                         const medicines = await fetchMedicinesData();
 
@@ -91,12 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         } else {
                             scanStatusElement.textContent = "Medicine not found";
                             scanStatusElement.style.color = "red";
-                            updateMedicineDetails(medicines[decodedText]);
+                            updateMedicineDetails(null);
                         }
-
-                        setTimeout(() => {
-                            isScanning = false;
-                        }, 1000);
                     },
                     (errorMessage) => {
                         console.log(`Scan error: ${errorMessage}`);
@@ -113,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const stopScanning = () => {
-
+        medicineDetailsElement.style.display = "none";
         scanStatusElement.textContent = "Click start scanning to start";
         scanStatusElement.style.color = "black";
 
