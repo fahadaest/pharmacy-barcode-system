@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const medicineDetailsElement = document.getElementById("medicine-details");
 
     let isScanningAllowed = true;
+    let totalScanned = 0;
+    let scannedMedicines = [];
 
     const config = {
         fps: 10,
@@ -57,9 +59,103 @@ document.addEventListener("DOMContentLoaded", () => {
             setField("interactions", "");
             setField("bnf", "");
         }
-
-        medicineDetailsElement.style.display = "block";
     };
+
+    const updateMedicineTable = (medicine) => {
+        const tableBody = document.querySelector("#medicine-detail-body");
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>${tableBody.rows.length + 1}</td>
+            <td>${medicine.name}</td>
+            <td>${medicine.strength}</td>
+            <td>${medicine.form}</td>
+            <td>${medicine.interactions.length > 0 ? medicine.interactions.join(", ") : "None"}</td>
+            <td>${medicine.BNF}</td>
+        `;
+        tableBody.appendChild(newRow);
+
+        totalScanned++;
+        document.getElementById("total-scanned").textContent = totalScanned;
+    };
+
+    const checkInteractionMatches = () => {
+        console.log("Scanned medicines", scannedMedicines);
+
+        const interactionTableBody = document.querySelector("#medicine-compare-details tbody");
+        const interactionStatusHeader = document.querySelector("#medicine-compare-details thead tr:first-child th");
+
+        if (scannedMedicines.length > 1) {
+            let allInteractions = scannedMedicines.map(med => med.interactions).flat();
+
+            let commonInteractions = [...new Set(allInteractions.filter((interaction, _, arr) =>
+                arr.filter(i => i === interaction).length === scannedMedicines.length
+            ))];
+
+            let matchingMedicines = [
+                {
+                    interactions: commonInteractions.length > 0 ? commonInteractions : ["None"],
+                    medicineNumber: commonInteractions.length > 0 ? commonInteractions.length : 0,
+                }
+            ];
+
+            updateInteractionStatus(matchingMedicines);
+            console.log(matchingMedicines);
+        } else {
+            let matchingMedicines = [
+                {
+                    interactions: ["None"],
+                    medicineNumber: 0,
+                }
+            ];
+
+            updateInteractionStatus(matchingMedicines);
+            console.log(matchingMedicines);
+        }
+    };
+
+
+
+    const updateInteractionStatus = (matchingMedicines) => {
+        const interactionTableBody = document.querySelector("#medicine-compare-details tbody");
+        const interactionStatusHeader = document.querySelector("#medicine-compare-details thead tr:first-child th");
+
+        interactionTableBody.innerHTML = "";
+
+        let totalMedicineNumber = matchingMedicines.reduce((sum, match) => sum + match.medicineNumber, 0);
+
+        if (totalMedicineNumber === 0) {
+            interactionStatusHeader.textContent = "Interaction Status: No Interactions";
+            interactionStatusHeader.style.color = "green";
+        } else if (totalMedicineNumber > 3) {
+            interactionStatusHeader.textContent = "Interaction Status: Critical";
+            interactionStatusHeader.style.color = "red";
+        } else {
+            interactionStatusHeader.textContent = "Interaction Status: Moderate";
+            interactionStatusHeader.style.color = "#cc9900";
+        }
+
+        if (matchingMedicines.length === 0) {
+            const noInteractionsRow = document.createElement("tr");
+            noInteractionsRow.innerHTML = `<td colspan="3">None</td> <td colspan="3">None</td>`;
+            interactionTableBody.appendChild(noInteractionsRow);
+        } else {
+            const aggregatedMatches = matchingMedicines.reduce((acc, match) => {
+                acc.indexNumbers.push(match.medicineNumber);
+                acc.interactions.push(match.interactions.join(", "));
+                return acc;
+            }, { indexNumbers: [], interactions: [] });
+
+            const interactionRow = document.createElement("tr");
+            interactionRow.innerHTML = `
+                <td colspan="3">${aggregatedMatches.indexNumbers.join(", ")}</td>
+                <td colspan="3">${aggregatedMatches.interactions.join(", ")}</td>
+            `;
+            interactionTableBody.appendChild(interactionRow);
+        }
+    };
+
+
+
 
 
     const startScanning = () => {
@@ -87,10 +183,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         const medicines = await fetchMedicinesData();
 
                         if (medicines[decodedText]) {
-                            console.log("Medicine Found:", medicines[decodedText]);
+                            // console.log("Medicine Found:", medicines[decodedText]);
                             scanStatusElement.textContent = "Medicine Found";
                             scanStatusElement.style.color = "green";
                             updateMedicineDetails(medicines[decodedText]);
+                            updateMedicineTable(medicines[decodedText]);
+                            scannedMedicines.push(medicines[decodedText]);
+                            checkInteractionMatches();
                         } else {
                             scanStatusElement.textContent = "Medicine not found";
                             scanStatusElement.style.color = "red";
@@ -98,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     },
                     (errorMessage) => {
-                        console.log(`Scan error: ${errorMessage}`);
+                        // console.log(`Scan error: ${errorMessage}`);
                     }
                 ).catch(err => {
                     console.error(`Error starting scanner: ${err}`);
@@ -112,7 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const stopScanning = () => {
-        medicineDetailsElement.style.display = "none";
         scanStatusElement.textContent = "Click start scanning to start";
         scanStatusElement.style.color = "black";
 

@@ -7,7 +7,12 @@
             "interactions": [
                 "Ibuprofen",
                 "Ibup",
-                "fen"
+                "fen",
+                "a",
+                "b",
+                "c",
+                "d",
+                "e"
             ],
             "BNF": "Take the prescribed course, contains penicillin"
         },
@@ -15,21 +20,56 @@
             "name": "Paracetamol 500mg Tablets",
             "strength": "500mg",
             "form": "Tablet",
-            "interactions": [],
+            "interactions": [
+                "Ibup",
+                "fen",
+                "a",
+                "b",
+                "c",
+                "d",
+                "e"
+            ],
             "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
         },
         "9521000999992": {
             "name": "Paracetamol 500mg Tablets",
             "strength": "500mg",
             "form": "Tablet",
-            "interactions": [],
+            "interactions": [
+                "Ibup",
+                "fen",
+                "a",
+                "b",
+                "c",
+                "d",
+                "e"
+            ],
             "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
         },
         "4200006200": {
             "name": "Paracetamol 500mg Tablets",
             "strength": "500mg",
             "form": "Tablet",
-            "interactions": [],
+            "interactions": [
+                "Ibup",
+                "fen",
+                "a",
+                "b",
+                "c",
+                "d",
+                "e"
+            ],
+            "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
+        },
+        "95200002": {
+            "name": "Paracetamol 500mg Tablets",
+            "strength": "500mg",
+            "form": "Tablet",
+            "interactions": [
+                "Ibup",
+                "a",
+                "b"
+            ],
             "BNF": "Take no more than 2 at any one time or more than 8 in 24 hours"
         }
     }

@@ -138,6 +138,27 @@ body>* {
     margin-bottom: 5px;
 }
 
+#medicine-compare-details {
+    max-height: 400px;
+    overflow-y: auto;
+    display: block;
+}
+
+#medicine-compare-details table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f2f2f2;
+}
+
+#medicine-compare-details th,
+#medicine-compare-details td {
+    padding: 10px;
+    text-align: left;
+    border: 3px solid #ddd;
+}
+
+
+
 @media screen and (max-width: 900px) {
     .content-scanner {
         display: flex;
