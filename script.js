@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const stopButton = document.getElementById("stop-scanning");
     const scanStatusElement = document.getElementById("scan-status");
     const medicineDetailsElement = document.getElementById("medicine-details");
+    const nextPatient = document.getElementById("next-patient");
+    const imgElement = document.querySelector('.interaction-status-icon');
 
     let isScanningAllowed = true;
     let totalScanned = 0;
@@ -43,6 +45,10 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 fieldElement.textContent = `${fieldId.charAt(0).toUpperCase() + fieldId.slice(1)}: not found`;
                 fieldElement.style.color = 'red';
+            }
+            if (fieldId === 'name' && value) {
+                fieldElement.style.fontSize = '20px';
+                fieldElement.style.fontWeight = "500";
             }
         };
 
@@ -126,12 +132,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (totalMedicineNumber === 0) {
             interactionStatusHeader.textContent = "Interaction Status: No Interactions";
             interactionStatusHeader.style.color = "green";
-        } else if (totalMedicineNumber > 3) {
-            interactionStatusHeader.textContent = "Interaction Status: Critical";
+            imgElement.src = '/images/green-tick.svg';
+        } else if (totalMedicineNumber >= 1) {
+            interactionStatusHeader.textContent = "Interaction Status: Interaction found";
             interactionStatusHeader.style.color = "red";
-        } else {
-            interactionStatusHeader.textContent = "Interaction Status: Moderate";
-            interactionStatusHeader.style.color = "#cc9900";
+            imgElement.src = '/images/red-cross.svg';
         }
 
         if (matchingMedicines.length === 0) {
@@ -154,10 +159,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-
-
-
-
     const startScanning = () => {
         scanStatusElement.textContent = "Scanning...";
         scanStatusElement.style.color = "yellow";
@@ -172,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         isScanningAllowed = false;
                         setTimeout(() => {
                             isScanningAllowed = true;
-                        }, 1000);
+                        }, 2000);
 
                         const audio = new Audio('./audio/store-scanner-beep-90395.mp3');
                         audio.load();
@@ -183,9 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         const medicines = await fetchMedicinesData();
 
                         if (medicines[decodedText]) {
-                            // console.log("Medicine Found:", medicines[decodedText]);
                             scanStatusElement.textContent = "Medicine Found";
-                            scanStatusElement.style.color = "green";
+                            scanStatusElement.style.color = "black";
                             updateMedicineDetails(medicines[decodedText]);
                             updateMedicineTable(medicines[decodedText]);
                             scannedMedicines.push(medicines[decodedText]);
@@ -209,10 +209,25 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(`Error getting cameras: ${err}`);
         });
     };
+    startButton.addEventListener("click", startScanning);
 
-    const stopScanning = () => {
+    const resetRecords = () => {
+        scannedMedicines = [];
+        totalScanned = 0;
+        document.getElementById("total-scanned").textContent = totalScanned;
+        document.querySelector("#medicine-detail-body").innerHTML = "";
+        document.querySelector("#medicine-compare-details tbody").innerHTML = "";
+        document.querySelector("#medicine-compare-details thead tr:first-child th").textContent = "Interaction Status: No Interactions";
+        document.querySelector("#medicine-compare-details thead tr:first-child th").style.color = "green";
+        updateMedicineDetails(null);
         scanStatusElement.textContent = "Click start scanning to start";
         scanStatusElement.style.color = "black";
+        imgElement.src = '';
+    };
+    nextPatient.addEventListener("click", resetRecords);
+
+    const stopScanning = () => {
+        resetRecords();
 
         html5QrCode.stop().then(() => {
             console.log("Scanner stopped.");
@@ -220,7 +235,5 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(`Error stopping scanner: ${err}`);
         });
     };
-
-    startButton.addEventListener("click", startScanning);
     stopButton.addEventListener("click", stopScanning);
 });

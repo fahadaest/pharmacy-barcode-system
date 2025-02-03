@@ -138,6 +138,15 @@ body>* {
     margin-bottom: 5px;
 }
 
+.content-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.interaction-status-icon {
+    height: 50px;
+}
+
 #medicine-compare-details {
     max-height: 400px;
     overflow-y: auto;
